@@ -1,13 +1,8 @@
 
-let fs = require('fs');
+// PRUEBAAAAAAA
+import fs from 'fs'
 
-// Le agregue este try...catch para solucionar el problema de creacion del archivo productos.txt y que lo inicie con los []
-// try{
-// 	let ArrayProd = `[]`;
-// 	let archivo = fs.writeFileSync('./productos.txt', ArrayProd);
-// } catch(error){
-// 	console.log(error);
-// }
+// let fs = require('fs');
 
 class Contenedor {
 	constructor(url) {
@@ -111,52 +106,8 @@ class Contenedor {
 	};
 };
 
-
 const productos = new Contenedor('../../data/productos.json');
 
+// module.exports = Contenedor;
 
-// function actions(){
-// 	setTimeout(()=>{
-// 		productos.save({ title: 'Heladera', price: 15975, thumbnail: 'www.foto.com/foto' });
-// 	}, 500)
-
-// 	setTimeout(()=>{
-// 		productos.save({ title: 'Lavarropas', price: 3215, thumbnail: 'www.foto.com/foto' });
-// 	}, 1000)
-
-// 	setTimeout(()=>{
-// 		productos.save({ title: 'Cocina', price: 98560, thumbnail: 'www.foto.com/foto'});
-// 	}, 1500)
-
-// 	setTimeout(()=>{
-// 		productos.save({ title: 'Pava Electrica', price: 5690, thumbnail: 'www.foto.com/foto'});
-// 	}, 2000)
-
-// 	setTimeout(()=>{
-// 		productos.save({ title: 'Tostadora', price: 690, thumbnail: 'www.foto.com/foto'});
-// 	}, 2000)
-
-// 	setTimeout(()=>{
-// 		productos.getAll();
-// 	}, 2500)
-
-// 	setTimeout(()=>{
-// 		productos.getById(2);
-// 	}, 3000)
-
-// 	setTimeout(()=>{
-// 		productos.deleteById(1);
-// 	}, 3500)
-
-// 	setTimeout(()=>{
-// 		productos.deleteAll();
-// 	}, 4000)
-
-// 	setTimeout(()=>{
-// 		productos.save({ nombre: 'ULTIMO PRODUCTO AGREGADO', precio: 32165, thumbnail: 'www.foto.com/foto'});
-// 	}, 4500)
-// }
-
-// actions();
-
-module.exports = Contenedor;
+export default Contenedor

@@ -1,81 +1,52 @@
 
-const { promises:fs } = require('fs');
+import Container from "./contenedor.js";
 
-function getTimestamp(){
-    return (`${new Date().getDate()}/${new Date().getMonth() + 1}/${new Date().getFullYear()} - ${new Date().toLocaleTimeString('es-AR')}`)
+const carts = new Container('./data/cart.json');
+
+//Add a cart
+const addCart = (req, res) => {
+	const products = req.body;
+	if (!products) return carts.save([]);
+	carts.save(products);
+	res.json({ message: 'Carrito agregado' });
 }
 
-function newId(arr, product=false){
-    if(product){ 
-        arr.sort((a, b) => {return a - b}) 
-        product.id = parseInt(arr[arr.length - 1].id) + 1
-        return product.id
-    }
-    return parseInt(arr[arr.length - 1].id) + 1
+//Delete cart
+const deleteCart = (req, res) => {
+	const id = Number(req.params.id);
+	if (isNaN(id)) return res.status(400).send({ message: 'Ingresa el ID de un carrito listado' });
+	const cartDeleted = carts.deleteById(id);
+	if (cartDeleted === -1) return res.status(404).json({ message: 'El ID no pertenece a un carrito listado' });
+	res.json({ message: 'Carrito eliminado' });
 }
 
-class Container{
-    constructor(route){
-        this.route = route;
-    }
-    
-    async newCart(){
-        let products = [];
-        let timestamp = getTimestamp();
-        let carts = await this.getAll();
-        let id = 1
-        if(carts.length > 0){
-            id = newId(carts);
-        }
-        this.saveCart({id, timestamp, products})
-        return {id, timestamp, products}
-        
-    }
-    async saveCart(cart){
-        let carts = await this.getAll();
-        carts.push(cart)
-        try {
-            await fs.writeFile(this.route, JSON.stringify(carts, null, 2))
-        } catch (error) {
-            console.log(error)
-        }
-    }
-    async saveCarts(carts){
-        try {
-            await fs.writeFile(this.route, JSON.stringify(carts, null, 2))
-        } catch (error) {
-            console.log(error)
-        }
-    }
-    async updateCart(cart){
-        let carts = await this.getAll()
-        let index = carts.map(element => element.id).indexOf(cart.id)
-        carts.splice(index, 1)
-        console.log(cart)
-        carts.push(cart)
-        await this.saveCarts(carts)
-        return true
-
-    }
-    async addToCart(cartId, product){
-        let cart = await this.getById(cartId)
-        cart.push(product)
-        await this.update(cart)
-    }
-    async deleteCartProduct(cartId, productId){
-        let cart = await this.getById(cartId)
-        try {
-            if(cart === null){
-                throw new Error('Id de carrito no encontrado')
-            }
-            let newCart = cart.filter(element => element.id =! productId)
-            await this.saveCart(newCart)
-        } catch (error) {
-            console.log('Error de escritura')
-            console.log(error)
-        }
-    }
-
+//Get products form an specific cart
+const getProducts = (req, res) => {
+	const id = Number(req.params.id);
+	if (isNaN(id)) return res.status(400).send({ message: 'Ingresa el ID de un carrito listado' });
+	const cartSelected = carts.getById(id);
+	if (cartSelected == null) return res.status(404).send({ message: 'Ingresa el ID de un carrito listado' });
+	res.json({ 'Productos': cartSelected.products });
 }
 
-module.exports = Container;
+//Add a product to a cart
+const addProductToCart = (req, res) => {
+	const idCartSelected = Number(req.params.id);
+	if (isNaN(idCartSelected)) return res.status(400).send({ message: 'Ingresa el ID de un carrito listado' });
+	const { idProduct } = req.body;
+	const productSaved = carts.saveProduct(idCartSelected, idProduct);
+	if (!productSaved) return res.status(404).send({ message: 'Error' });
+	res.json({ message: productSaved });
+}
+
+//Delete a product from a cart
+const deleteProduct = (req, res) => {
+	const id = Number(req.params.id);
+	const id_prod = Number(req.params.id_prod);
+	if (isNaN(id) || isNaN(id_prod)) return res.status(400).send({ message: 'Ingresa el ID de un carrito listado' });
+	const productDeleted = carts.deleteProduct(id, id_prod);
+	if (productDeleted == -1 || !productDeleted) return res.status(404).send({ message: 'Error' });
+	res.json({ message: 'Producto eliminado' });
+}
+
+export { addCart, deleteCart, getProducts, addProductToCart, deleteProduct };

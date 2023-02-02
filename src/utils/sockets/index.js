@@ -1,4 +1,17 @@
-let { Server: SocketIO } = require("socket.io");
+
+// PRUEBAAAA
+// import {SocketIO} from "socket.io";
+
+import { Server } from 'socket.io';
+import express from 'express';
+import { createServer } from 'http';
+
+const app = express(); 
+const server = createServer(app); 
+const SocketIO = new Server(server);
+
+
+// let { Server: SocketIO } = require("socket.io");
 
 class Socket {
   static instancia;
@@ -81,4 +94,6 @@ class Socket {
   }
 }
 
-module.exports = Socket;
+export default Socket;
+
+// module.exports = Socket;

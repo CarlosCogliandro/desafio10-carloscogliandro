@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "desafio-10---segunda-entrega-del-proyecto-final",
   "version": "1.0.0",
   "description": "DESAFIO 6 - WEBSOCKET",
